@@ -1,0 +1,123 @@
+<body>
+  <div id="score">Score: 0</div>
+  <canvas id="gameCanvas"></canvas>
+  
+  <!-- AD section (hidden by default) -->
+  <div id="gameAd" style="display:none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: white; padding: 20px; border-radius: 10px; z-index: 3; box-shadow: 0 0 20px rgba(0,0,0,0.3);">
+    <h3 style="text-align:center;">Sponsored Ad</h3>
+    <iframe src="https://adssettings.google.com" width="300" height="250" frameborder="0"></iframe>
+  </div>
+  
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const scoreDisplay = document.getElementById("score");
+    const adBox = document.getElementById("gameAd");
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const birdImg = new Image();
+    birdImg.src = "https://i.ibb.co/fz9qbPCK/pngkey-com-sprite-logo-png-8562815.png";
+    
+    const pipeImg = new Image();
+    pipeImg.src = "https://i.ibb.co/zT67yPb0/toppng-com-flappy-bird-pipe-transparent-281x1080-1.png";
+    
+    const bird = {
+      x: 80,
+      y: canvas.height / 2,
+      width: 40,
+      height: 40,
+      gravity: 0.4,
+      velocity: 0,
+      flapPower: -7
+    };
+    
+    let pipes = [];
+    let score = 0;
+    let gameOver = false;
+    let pipeInterval = 0;
+    
+    function randomY() {
+      return Math.floor(Math.random() * (canvas.height / 2)) - canvas.height / 3;
+    }
+    
+    function drawPipe(pipe) {
+      ctx.save();
+      ctx.translate(pipe.x + pipe.width / 2, pipe.y + pipe.height / 2);
+      ctx.scale(1, -1);
+      ctx.drawImage(pipeImg, -pipe.width / 2, -pipe.height / 2, pipe.width, pipe.height);
+      ctx.restore();
+      ctx.drawImage(pipeImg, pipe.x, pipe.y + pipe.height + pipe.gap, pipe.width, pipe.height);
+    }
+    
+    function draw() {
+      if (gameOver) return;
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+      
+      pipeInterval++;
+      if (pipeInterval > 90) {
+        pipes.push({
+          x: canvas.width,
+          y: randomY(),
+          width: 80,
+          height: canvas.height / 2,
+          gap: 160,
+          passed: false
+        });
+        pipeInterval = 0;
+      }
+      
+      for (let i = 0; i < pipes.length; i++) {
+        let pipe = pipes[i];
+        pipe.x -= 3;
+        drawPipe(pipe);
+        
+        if (
+          bird.x + bird.width > pipe.x &&
+          bird.x < pipe.x + pipe.width &&
+          (bird.y < pipe.y + pipe.height || bird.y + bird.height > pipe.y + pipe.height + pipe.gap)
+        ) {
+          endGame();
+        }
+        
+        if (!pipe.passed && pipe.x + pipe.width < bird.x) {
+          pipe.passed = true;
+          score++;
+          scoreDisplay.innerText = "Score: " + score;
+        }
+      }
+      
+      bird.velocity += bird.gravity;
+      bird.y += bird.velocity;
+      
+      if (bird.y + bird.height > canvas.height || bird.y < 0) {
+        endGame();
+      }
+      
+      requestAnimationFrame(draw);
+    }
+    
+    function flap() {
+      if (!gameOver) {
+        bird.velocity = bird.flapPower;
+      }
+    }
+    
+    function endGame() {
+      gameOver = true;
+      setTimeout(() => {
+        alert("Game Over! Your Score: " + score);
+        adBox.style.display = "block"; // Show ad box
+      }, 100);
+    }
+    
+    document.addEventListener("keydown", flap);
+    canvas.addEventListener("touchstart", flap);
+    
+    draw();
+  </script>
+</body>
