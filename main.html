@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flappy Bird Game</title>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7535213942826916"
+     crossorigin="anonymous"></script>
+</head>
 <body>
   <div id="score">Score: 0</div>
   <canvas id="gameCanvas"></canvas>
@@ -6,9 +15,14 @@
   <div id="gameAd" style="display:none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
   background: white; padding: 20px; border-radius: 10px; z-index: 3; box-shadow: 0 0 20px rgba(0,0,0,0.3);">
     <h3 style="text-align:center;">Sponsored Ad</h3>
-    <iframe src="https://adssettings.google.com" width="300" height="250" frameborder="0"></iframe>
+    <!-- Google AdSense Ad Code -->
+    <ins class="adsbygoogle"
+         style="display:block; text-align:center;"
+         data-ad-client="ca-pub-7535213942826916"
+         data-ad-slot="your-ad-slot-id"
+         data-ad-format="rectangle"></ins>
   </div>
-  
+
   <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
@@ -112,6 +126,7 @@
       setTimeout(() => {
         alert("Game Over! Your Score: " + score);
         adBox.style.display = "block"; // Show ad box
+        (adsbygoogle = window.adsbygoogle || []).push({});
       }, 100);
     }
     
@@ -121,3 +136,4 @@
     draw();
   </script>
 </body>
+</html>
